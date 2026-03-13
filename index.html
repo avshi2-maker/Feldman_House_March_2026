@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a1a2e">
+<title>דנסגלס® + באקסב-אקו® — מערכת חידוש חזיתות</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#1a1a2e;--teal:#0d5c63;--teal2:#0a4550;
+  --gold:#c9933a;--gold2:#e8b84c;
+  --cream:#fdf6e3;--lgray:#f0ebe0;
+  --green:#2d9e6b;--red:#dc2626;
+  --white:#ffffff;--mgray:#8b8b8b;
+}
+body{font-family:'Heebo',sans-serif;background:#111;color:#fff;overflow-x:hidden;direction:rtl}
+nav{position:fixed;top:0;right:0;left:0;z-index:999;background:rgba(10,10,20,0.96);
+    backdrop-filter:blur(10px);border-bottom:1px solid rgba(201,147,58,0.3);
+    padding:8px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nav-title{font-size:13px;font-weight:900;color:var(--gold);margin-left:16px;white-space:nowrap}
+#nav-buttons{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+.nav-btn{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);
+         color:#ccc;padding:5px 11px;border-radius:20px;cursor:pointer;font-size:11px;
+         font-family:'Heebo',sans-serif;transition:all 0.2s;white-space:nowrap}
+.nav-btn:hover,.nav-btn.active{background:var(--gold);color:var(--dark);border-color:var(--gold);font-weight:700}
+.nav-left{margin-right:auto;display:flex;gap:8px}
+.print-btn{background:var(--teal);border:none;color:#fff;padding:6px 16px;
+           border-radius:20px;cursor:pointer;font-size:11px;font-family:'Heebo',sans-serif;font-weight:700}
+#loading{position:fixed;inset:0;background:var(--dark);display:flex;flex-direction:column;
+         align-items:center;justify-content:center;z-index:9999}
+.spinner{width:48px;height:48px;border:4px solid rgba(201,147,58,0.2);
+         border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading p{color:var(--gold);font-size:14px;letter-spacing:2px}
+main{padding-top:56px}
+.slide{width:100%;min-height:100vh;padding:60px 48px 48px;display:none;animation:fadeIn 0.35s ease}
+.slide.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.slide-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;opacity:0.75}
+.slide-header{margin-bottom:28px}
+.slide-header h1{font-size:38px;font-weight:900;line-height:1.15;margin-bottom:10px}
+.slide-header p{font-size:14px;opacity:0.7;line-height:1.6}
+.header-line{height:3px;width:70px;margin-top:14px;border-radius:2px}
+.hero-img{width:100%;height:300px;object-fit:cover;border-radius:14px;
+          margin-bottom:28px;box-shadow:0 16px 48px rgba(0,0,0,0.4)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:20px}
+.card-head{padding:13px 16px;border-radius:10px 10px 0 0;display:flex;align-items:center;gap:10px;direction:rtl}
+.card-head span{font-size:20px}
+.card-head h3{font-size:13px;font-weight:900;color:#fff}
+.card-body{background:#fff;padding:14px 16px;border-radius:0 0 10px 10px;
+           font-size:12px;color:#333;line-height:1.9;direction:rtl}
+.two-col{display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start}
+.col-right{border-radius:14px;padding:28px;position:sticky;top:68px}
+.spec-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.08);align-items:flex-start;direction:rtl}
+.spec-key{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:1px;
+          color:var(--gold);width:110px;flex-shrink:0;padding-top:3px;text-align:right}
+.spec-val{font-size:11px;line-height:1.6;flex:1}
+.spec-highlight .spec-val{color:var(--gold2);font-weight:700}
+.product-img{width:100%;height:190px;object-fit:cover;border-radius:10px;margin-bottom:18px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}
+.stat-box{border-radius:10px;padding:14px;text-align:center}
+.stat-n{font-size:24px;font-weight:900}
+.stat-l{font-size:9px;margin-top:5px;opacity:0.7;line-height:1.4}
+.data-table{width:100%;border-collapse:collapse;font-size:12px;border-radius:10px;overflow:hidden;direction:rtl}
+.data-table th{padding:9px 12px;text-align:right;font-size:10px;font-weight:700}
+.data-table td{padding:8px 12px;border-bottom:1px solid rgba(0,0,0,0.06);text-align:right}
+.data-table tr:nth-child(even) td{background:rgba(0,0,0,0.03)}
+.highlight-row td{font-weight:900}
+.pass{font-weight:700;color:var(--green)}
+.two-tables{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.table-title{font-size:13px;font-weight:900;margin-bottom:10px}
+.price-wrap{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.08)}
+.price-notes{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.pnote{border-radius:10px;padding:12px 14px}
+.pnote strong{font-size:9px;display:block;letter-spacing:1px;margin-bottom:5px;color:var(--gold)}
+.pnote span{font-size:11px;line-height:1.6}
+.cover-wrap{display:grid;grid-template-columns:1fr 380px;gap:36px;align-items:center;min-height:85vh}
+.cover-title{font-size:52px;font-weight:900;line-height:1.05;margin-bottom:14px}
+.cover-title span{color:var(--gold)}
+.cover-sub{font-size:18px;letter-spacing:2px;color:var(--gold);margin-bottom:20px}
+.cover-line{width:70px;height:3px;background:var(--gold);margin-bottom:20px}
+.tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.tag{background:rgba(201,147,58,0.15);border:1px solid rgba(201,147,58,0.3);
+     color:var(--gold);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700}
+.sys-box{border:1px solid rgba(201,147,58,0.3);border-radius:12px;padding:22px}
+.sys-layer{background:rgba(255,255,255,0.07);border-radius:8px;padding:11px 14px;
+           margin-bottom:7px;font-size:13px;font-weight:700;text-align:center}
+.sys-plus{color:var(--gold);text-align:center;font-size:18px;margin:3px 0}
+.sys-result{background:var(--gold);color:var(--dark);border-radius:8px;
+            padding:11px 14px;font-size:12px;font-weight:900;margin-top:7px;text-align:center}
+.colors-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:20px}
+.color-card{border-radius:14px;overflow:hidden;cursor:zoom-in;
+            box-shadow:0 8px 32px rgba(0,0,0,0.4);transition:transform 0.25s,box-shadow 0.25s}
+.color-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
+.color-card img{width:100%;height:260px;object-fit:cover;display:block}
+.color-label{padding:12px 16px;font-size:13px;font-weight:700;text-align:center}
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);
+          z-index:9999;align-items:center;justify-content:center;flex-direction:column}
+#lightbox.open{display:flex}
+#lb-img{max-width:90vw;max-height:82vh;border-radius:12px;
+        box-shadow:0 0 80px rgba(0,0,0,0.8);object-fit:contain}
+#lb-caption{margin-top:16px;font-size:14px;color:var(--gold);font-weight:700}
+#lb-close{position:absolute;top:20px;left:24px;font-size:28px;cursor:pointer;
+          color:#fff;background:rgba(255,255,255,0.1);border:none;
+          border-radius:50%;width:44px;height:44px;line-height:44px;text-align:center}
+#lb-close:hover{background:var(--red)}
+.contact-wrap{display:flex;flex-direction:column;align-items:center;
+              justify-content:center;min-height:85vh;text-align:center}
+.contact-box{border:1px solid rgba(201,147,58,0.3);border-radius:14px;
+             padding:28px 50px;margin-top:28px;display:inline-block}
+.weight-bar{border:1px solid rgba(201,147,58,0.3);background:rgba(201,147,58,0.08);
+            border-radius:8px;padding:11px 18px;text-align:center;
+            font-size:12px;font-weight:700;color:var(--gold);margin-top:18px}
+.epd-bar{background:rgba(13,92,99,0.15);border:1px solid rgba(13,92,99,0.3);
+         border-radius:8px;padding:11px 18px;margin-top:16px;
+         display:flex;align-items:center;gap:10px;font-size:12px;direction:rtl}
+.epd-bar a{color:var(--gold);font-weight:700;text-decoration:none}
+.epd-bar a:hover{text-decoration:underline}
+.surface-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:20px}
+.surface-num{display:inline-block;width:26px;height:26px;border-radius:50%;
+             font-size:12px;font-weight:900;text-align:center;line-height:26px;margin-bottom:8px}
+@media(max-width:768px){
+  .cover-wrap,.two-col,.two-tables,.price-notes{grid-template-columns:1fr}
+  .slide{padding:60px 18px 28px}
+  .cover-title{font-size:34px}
+  .stats-row{grid-template-columns:1fr 1fr}
+  nav{padding:6px 12px}
+  .nav-title{font-size:11px}
+}
+@media print{
+  nav{display:none}
+  .slide{display:block!important;page-break-after:always;min-height:100vh;padding:36px}
+  main{padding-top:0}
+}
+@media(max-width:640px){
+  nav{top:auto;bottom:0;right:0;left:0;padding:6px 8px 10px;flex-direction:column;gap:4px;
+      border-top:1px solid rgba(201,147,58,0.3);border-bottom:none;}
+  .nav-title{font-size:11px;margin-left:0;margin-bottom:2px;}
+  #nav-buttons{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding-bottom:2px;
+               -webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  #nav-buttons::-webkit-scrollbar{display:none;}
+  .nav-btn{font-size:10px;padding:6px 10px;white-space:nowrap;flex-shrink:0;}
+  .nav-left{display:none;}
+  main{padding-top:8px;padding-bottom:90px;}
+  .slide{padding:16px 14px 20px;min-height:auto;}
+  .slide-header h1{font-size:22px;}
+  .slide-header p{font-size:12px;}
+  .cover-wrap{grid-template-columns:1fr;gap:20px;min-height:auto;}
+  .cover-title{font-size:28px;}
+  .cover-sub{font-size:14px;}
+  .grid3{grid-template-columns:1fr;}
+  .two-col{grid-template-columns:1fr;}
+  .two-tables{grid-template-columns:1fr;}
+  .colors-grid{grid-template-columns:1fr 1fr;gap:10px;}
+  .surface-grid{grid-template-columns:1fr 1fr;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .price-notes{grid-template-columns:1fr 1fr;}
+  .price-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .data-table{font-size:10px;}
+  .data-table th,.data-table td{padding:6px 8px;}
+  .spec-key{width:80px;font-size:8px;}
+  .spec-val{font-size:10px;}
+  .hero-img{height:180px;}
+  .product-img{height:140px;}
+  .color-card img{height:160px;}
+  .colors-grid{grid-template-columns:1fr;}
+  #slide-operations > div{grid-template-columns:1fr !important;}
+  #slide-team > div:nth-child(2){grid-template-columns:1fr !important;}
+  #slide-process > div:last-child{grid-template-columns:1fr !important;}
+  iframe{min-height:320px !important;height:320px !important;}
+  video{max-height:220px;}
+  #lb-img{max-width:96vw;max-height:75vh;}
+  .epd-bar{flex-wrap:wrap;font-size:10px;}
+  .contact-box{padding:18px 20px;}
+  .contact-wrap h1{font-size:26px;}
+  .weight-bar{font-size:10px;line-height:1.8;}
+}
+.slide{touch-action:pan-y pinch-zoom;}
+#nav-buttons{touch-action:pan-x;}
+*{-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;-webkit-overflow-scrolling:touch;}
+.sw-prev,.sw-next{display:none;}
+@media(max-width:640px){
+  .sw-prev,.sw-next{display:flex;position:fixed;top:50%;transform:translateY(-50%);z-index:998;
+    width:36px;height:72px;align-items:center;justify-content:center;
+    background:rgba(13,92,99,0.75);border:none;cursor:pointer;font-size:20px;color:#fff;
+    border-radius:8px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+  .sw-prev{right:0;border-radius:8px 0 0 8px;}
+  .sw-next{left:0;border-radius:0 8px 8px 0;}
+  .sw-prev:active,.sw-next:active{background:rgba(201,147,58,0.9);}
+}
+</style>
+</head>
+<body>
+
+<button class="sw-prev" onclick="goTo(Math.max(current-1,0))" aria-label="הקודם">&#8250;</button>
+<button class="sw-next" onclick="goTo(Math.min(current+1,(window._totalSlides||14)-1))" aria-label="הבא">&#8249;</button>
+
+<div id="lightbox">
+  <button id="lb-close" onclick="closeLB()">✕</button>
+  <img id="lb-img" src="" alt="">
+  <div id="lb-caption"></div>
+</div>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <p>טוען מצגת...</p>
+</div>
+
+<nav>
+  <span class="nav-title">דנסגלס® + באקסב-אקו®</span>
+  <div id="nav-buttons"></div>
+  <div class="nav-left">
+    <button class="print-btn" onclick="window.print()">🖨 הדפס / PDF</button>
+  </div>
+</nav>
+
+<main id="main"></main>
+
+<script>
+const SUPA_URL = 'https://wbuaeuenvuhbbuxeqlxr.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndidWFldWVudnVoYmJ1eGVxbHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzOTIzNTUsImV4cCI6MjA4ODk2ODM1NX0.1EilRF1tPae_1N0jGpa7P5bFQiV4UU0ZmBvzHmgBjPw';
+const EPD_URL  = 'https://wbuaeuenvuhbbuxeqlxr.supabase.co/storage/v1/object/public/facade-images/EPD-Densglass.pdf';
+const MOD_URL  = 'https://wbuaeuenvuhbbuxeqlxr.supabase.co/storage/v1/object/public/facade-images/module-sketch.jpeg';
+
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+let allSlides=[], allContent=[], allSpecs=[], allCerts=[], allPrice=[], offerMeta={};
+let uiStrings={};
+function ui(key){ return uiStrings[key]||''; }
+let coverComps=[], slideExtra=[], warrantyItems=[], sustainItems=[], colorSamples=[];
+let projectTasks=[], projectMeta={}, processSteps=[];
+let sitePhotos=[], teamMembers=[], teamDetails=[], teamProjects=[], priceMeta={};
+function gex(key){ return slideExtra.find(r=>r.slide_key===key)||{}; }
+function gtd(name){ return teamDetails.filter(r=>r.member_name===name); }
+function gtp(name){ return teamProjects.filter(r=>r.member_name===name); }
+let current = 0;
+
+async function loadAll(){
+  const [s,cc,sp,ce,pr,om,
+         cvr,sex,war,sus,col,
+         tsk,pmeta,prc,pho,
+         tmb,tmd,tmp,pricm,uis] = await Promise.all([
+    db.from('presentation_slides').select('*').eq('is_active',true).order('slide_order'),
+    db.from('slide_content').select('*').eq('is_active',true).order('block_order'),
+    db.from('product_specs').select('*').order('spec_order'),
+    db.from('certifications').select('*').order('cert_order'),
+    db.from('price_offer').select('*').eq('is_active',true).order('item_order'),
+    db.from('offer_meta').select('*').limit(1),
+    db.from('cover_components').select('*').eq('is_active',true).order('layer_order'),
+    db.from('slide_extra').select('*').eq('is_active',true),
+    db.from('warranty_items').select('*').eq('is_active',true).order('item_order'),
+    db.from('sustainability_items').select('*').eq('is_active',true).order('item_order'),
+    db.from('color_samples').select('*').eq('is_active',true).order('sample_order'),
+    db.from('project_tasks').select('*').eq('is_active',true).order('task_order'),
+    db.from('project_meta').select('*').eq('is_active',true),
+    db.from('process_steps').select('*').eq('is_active',true).order('step_order'),
+    db.from('site_photos').select('*').eq('is_active',true).order('photo_order'),
+    db.from('team_members').select('*').eq('is_active',true).order('member_order'),
+    db.from('team_member_details').select('*').eq('is_active',true).order('detail_order'),
+    db.from('team_projects').select('*').eq('is_active',true).order('project_order'),
+    db.from('price_meta').select('*').eq('is_active',true),
+    db.from('ui_strings').select('*')
+  ]);
+  allSlides        = s.data    || [];
+  allContent       = cc.data   || [];
+  allSpecs         = sp.data   || [];
+  allCerts         = ce.data   || [];
+  allPrice         = pr.data   || [];
+  offerMeta        = om.data?.[0] || {};
+  coverComps       = cvr.data  || [];
+  slideExtra       = sex.data  || [];
+  warrantyItems    = war.data  || [];
+  sustainItems     = sus.data  || [];
+  colorSamples     = col.data  || [];
+  projectTasks     = tsk.data  || [];
+  projectMeta      = Object.fromEntries((pmeta.data||[]).map(r=>[r.meta_key,r.meta_value]));
+  processSteps     = prc.data  || [];
+  sitePhotos       = pho.data  || [];
+  teamMembers      = tmb.data  || [];
+  teamDetails      = tmd.data  || [];
+  teamProjects     = tmp.data  || [];
+  priceMeta        = Object.fromEntries((pricm.data||[]).map(r=>[r.meta_key,r]));
+  uiStrings        = Object.fromEntries((uis.data||[]).map(r=>[r.string_key,r.string_value]));
+}
+
+const gc = key => allContent.filter(x=>x.slide_key===key);
+const gs = key => allSpecs.filter(x=>x.product_key===key);
+const gce= key => allCerts.filter(x=>x.product_key===key);
+const idx= sl  => allSlides.indexOf(sl);
+
+/* ── COVER ── */
+function renderCover(sl){
+  const bullets = gc('cover').filter(x=>x.block_type==='bullet');
+  const ex = gex('cover');
+  const layers = coverComps.filter(r=>r.icon);
+  const result = coverComps.find(r=>!r.icon);
+  return `
+  <div class="slide active" id="slide-0" style="background:${sl.bg_color};min-height:100vh;padding:68px 48px 48px">
+    <div class="cover-wrap">
+      <div>
+        <div style="font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:12px">${ex.label_override||''}</div>
+        <div class="cover-title">${sl.title||''}</div>
+        <div class="cover-sub">${sl.subtitle||''}</div>
+        <div class="cover-line"></div>
+        <p style="font-size:13px;color:#b0a890;line-height:1.9;max-width:500px">${sl.subtitle2||''}</p>
+        <div class="tag-row">
+          ${bullets.map(b=>`<span class="tag">${b.icon} ${b.heading}</span>`).join('')}
+        </div>
+        ${sl.image_url?`<img src="${sl.image_url}" class="hero-img" style="margin-top:24px;height:200px" onerror="this.style.display='none'">` :''}
+      </div>
+      <div style="background:var(--teal);border-radius:16px;padding:28px;text-align:center">
+        <div style="font-size:9px;letter-spacing:3px;color:var(--gold);margin-bottom:18px">${sl.label_text||'המערכת'}</div>
+        <div class="sys-box">
+          ${layers.map((l,i)=>`
+            <div class="sys-layer">${l.icon} ${l.label}</div>
+            ${i < layers.length-1 ? '<div class="sys-plus">+</div>' : ''}`).join('')}
+          ${result?`<div class="sys-result">${result.label}</div>`:''}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── GRID3 ── */
+function renderGrid3(sl){
+  const items = gc(sl.slide_key);
+  const ex = gex(sl.slide_key);
+  const isLight = sl.bg_color==='#fdf6e3';
+  const tc = isLight?'color:#1a1a2e':'color:#fff';
+  const sc = isLight?'color:#555':'color:var(--lgray)';
+  return `
+  <div class="slide" id="slide-${idx(sl)}" style="background:${sl.bg_color};padding-top:68px">
+    <div class="slide-header">
+      <div class="slide-label" style="color:${sl.accent_color}">${sl.slide_key.toUpperCase()}</div>
+      <h1 style="${tc}">${sl.title}</h1>
+      <p style="${sc}">${sl.subtitle||''}</p>
+      <div class="header-line" style="background:${sl.accent_color}"></div>
+    </div>
+    ${sl.image_url?`<img src="${sl.image_url}" class="hero-img" onerror="this.style.display='none'">` :''}
+    <div class="grid3">
+      ${items.map(item=>`
+        <div style="border-radius:12px;overflow:hidden;${isLight?'box-shadow:0 2px 12px rgba(0,0,0,0.07)':'border:1px solid rgba(255,255,255,0.07)'}">
+          <div class="card-head" style="background:${sl.accent_color}">
+            <span>${item.icon||''}</span>
+            <h3>${item.heading||''}</h3>
+          </div>
+          <div class="card-body">${item.body_text||''}</div>
+        </div>`).join('')}
+    </div>
+    ${ex.weight_bar_text ? '<div class="weight-bar">'+ex.weight_bar_text+'</div>'+(ex.lightbox_url?'<div style="margin-top:28px;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(201,147,58,0.3);cursor:zoom-in" onclick="openLB(\''+ex.lightbox_url+'\',\''+sl.title+'\')"><img src="'+ex.lightbox_url+'" style="width:100%;display:block" onerror="this.style.display=\'none\'"><div style="background:rgba(0,0,0,0.55);padding:9px 20px;text-align:center;font-size:11px;color:rgba(255,255,255,0.5)">'+(sl.zoom_label||ui('zoom_label'))+'</div></div>':'') : ''}
+    ${ex.solution_bar_text?`<div style="background:${sl.accent_color};border-radius:10px;padding:11px 18px;margin-top:18px;font-size:12px;font-weight:700;color:#fff">${ex.solution_bar_text}</div>`:''}
+  </div>`;
+}
+
+/* ── TWO COL ── */
+function renderTwoCol(sl){
+  const isLight = sl.bg_color==='#fdf6e3';
+  const tc = isLight?'color:#1a1a2e':'color:#fff';
+  const sc = isLight?'color:#555':'color:var(--lgray)';
+  const specs = gs(sl.slide_key);
+  const feats = gc(sl.slide_key);
+  const ex = gex(sl.slide_key);
+  const isGreen = sl.accent_color==='#2d9e6b';
+  const colBg = isLight?'background:var(--teal)':'background:#1c2438';
+  const statData = isGreen ? (sl.stat_data ? JSON.parse(sl.stat_data) : (sl.stats_json ? JSON.parse(sl.stats_json) : JSON.parse(ui('stats_json_baxab')||'[]'))) : [];
+  const displaySubtitle = ex.subtitle_override || sl.subtitle || '';
+  return `
+  <div class="slide" id="slide-${idx(sl)}" style="background:${sl.bg_color};padding-top:68px">
+    <div class="slide-header">
+      <div class="slide-label" style="color:${sl.accent_color}">${ex.label_override||ui('product_label')}</div>
+      <h1 style="${tc}">${sl.title}</h1>
+      <p style="${sc}">${displaySubtitle}</p>
+      ${ex.supplier_url&&!isGreen?`<p style="margin-top:4px;font-size:12px"><span style="color:#aaa">ספק: </span><a href="${ex.supplier_url}" target="_blank" style="color:var(--gold);font-weight:700;text-decoration:none">${ex.supplier_name} ↗</a></p>`:''}
+      ${ex.supplier_url&&isGreen?`<p style="margin-top:4px;font-size:12px"><span style="color:#aaa">יצרן: </span><a href="${ex.supplier_url}" target="_blank" style="color:var(--green);font-weight:700;text-decoration:none">${ex.supplier_name} ↗</a></p>`:''}
+      <div class="header-line" style="background:${sl.accent_color}"></div>
+    </div>
+    <div class="two-col">
+      <div class="col-left">
+        ${feats.map(f=>`
+          <div style="display:flex;gap:12px;background:${isLight?'#fff':'rgba(255,255,255,0.04)'};
+               border-radius:10px;padding:13px;margin-bottom:10px;
+               border:1px solid rgba(0,0,0,0.06);direction:rtl">
+            <span style="font-size:22px;flex-shrink:0;width:28px;text-align:center">${f.icon||''}</span>
+            <div>
+              <div style="font-size:12px;font-weight:900;color:${sl.accent_color};margin-bottom:4px">${f.heading||''}</div>
+              <div style="font-size:11px;${isLight?'color:#444':'color:var(--lgray)'};line-height:1.8">${f.body_text||''}</div>
+            </div>
+          </div>`).join('')}
+        ${!isGreen?`<div class="epd-bar">📄 <a href="${EPD_URL}" target="_blank">${sl.epd_label||ui('epd_label')}</a></div>`:''}
+        ${isGreen?`
+        <div style="margin-top:16px">
+          <div style="font-size:11px;font-weight:900;color:var(--green);margin-bottom:8px;letter-spacing:1px">🎨 מגוון צבעים — לחץ להגדלה</div>
+          ${sl.image_url?`<img src="${sl.image_url}"
+               style="width:100%;height:200px;object-fit:cover;object-position:center;border-radius:10px;cursor:zoom-in;box-shadow:0 4px 20px rgba(0,0,0,0.3)"
+               onclick="openLB('${sl.image_url}','${sl.title}')"
+               alt="צבעי Topcret" onerror="this.style.display='none'">`:''}
+          <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+            ${sl.image_url?`<button onclick="openLB('${sl.image_url}','${sl.title}')"
+               style="flex:1;background:var(--green);color:#fff;padding:9px 14px;border-radius:8px;font-size:11px;font-weight:700;border:none;cursor:pointer">${sl.enlarge_label||ui('enlarge_label')}
+            </button>`:''}
+            ${sl.download_url?`<a href="${sl.download_url}" target="_blank"
+               style="flex:1;background:rgba(45,158,107,0.2);border:1px solid var(--green);color:var(--green);padding:9px 14px;border-radius:8px;font-size:11px;font-weight:700;text-decoration:none;text-align:center">${sl.download_label||ui('download_colors_label')}
+            </a>`:''}
+          </div>
+          <div style="font-size:10px;color:var(--mgray);margin-top:6px;text-align:center">${sl.color_note||ui('color_note')}</div>
+        </div>
+        <div style="margin-top:20px;background:rgba(201,147,58,0.08);border:1px solid rgba(201,147,58,0.3);border-radius:12px;padding:18px;direction:rtl">
+          <div style="font-size:13px;font-weight:900;color:var(--gold);margin-bottom:14px">${sl.warranty_section_title||ui('warranty_title')}</div>
+          ${warrantyItems.map((w,i)=>`
+            <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(201,147,58,0.12);align-items:flex-start">
+              <span style="background:var(--gold);color:var(--dark);border-radius:50%;width:22px;height:22px;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">${i+1}</span>
+              <div>
+                <div style="font-size:10px;font-weight:900;color:var(--gold);margin-bottom:3px">${w.title}</div>
+                <div style="font-size:10px;color:var(--lgray);line-height:1.7">${w.body}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+        <div style="margin-top:20px;background:rgba(45,158,107,0.08);border:1px solid rgba(45,158,107,0.25);border-radius:12px;padding:16px;direction:rtl">
+          <div style="font-size:12px;font-weight:900;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+            ${sl.sustainability_title||ui('sustainability_title')}
+            ${sl.sustainability_url?`<a href="${sl.sustainability_url}" target="_blank" style="font-size:9px;color:var(--mgray);font-weight:400;text-decoration:none;border:1px solid rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px">${sl.source_label||ui('source_label')}</a>`:''}
+          </div>
+          ${sustainItems.map(s=>`
+            <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(45,158,107,0.15);align-items:flex-start">
+              <span style="font-size:18px;flex-shrink:0">${s.icon}</span>
+              <div>
+                <div style="font-size:10px;font-weight:900;color:var(--green);margin-bottom:3px">${s.title}</div>
+                <div style="font-size:10px;color:var(--lgray);line-height:1.7">${s.body}</div>
+              </div>
+            </div>`).join('')}
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            ${(sl.cert_badges||ui('cert_badges')).split(',').map(b=>
+              `<span style="background:rgba(45,158,107,0.2);border:1px solid rgba(45,158,107,0.4);color:var(--green);padding:3px 10px;border-radius:12px;font-size:9px;font-weight:700">${b.trim()}</span>`
+            ).join('')}
+          </div>
+        </div>`:''}
+      </div>
+      <div class="col-right" style="${colBg}">
+        ${sl.product_img_url&&!isGreen?`<img src="${sl.product_img_url}" class="product-img" onerror="this.style.display='none'">` :''}
+        ${statData.length?`<div class="stats-row">${statData.map(([n,l])=>`
+          <div class="stat-box" style="background:rgba(255,255,255,0.08)">
+            <div class="stat-n" style="color:${sl.accent_color}">${n}</div>
+            <div class="stat-l">${l}</div>
+          </div>`).join('')}</div>`:''}
+        ${specs.filter(s=>!(isGreen&&s.spec_name==='אחריות')).map(s=>`
+          <div class="spec-row ${s.highlight?'spec-highlight':''}">
+            <span class="spec-key">${s.spec_name}</span>
+            <span class="spec-val">${s.spec_value}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── FIRE TABLE ── */
+function renderFireTable(sl){
+  const dgC = gce('densglass');
+  const bxC = gce('baxab');
+  const ex = gex('fire');
+  return `
+  <div class="slide" id="slide-${idx(sl)}" style="background:${sl.bg_color};padding-top:68px">
+    <div class="slide-header">
+      <div class="slide-label" style="color:${sl.accent_color}">${ex.label_override||'ציות רגולטורי'}</div>
+      <h1 style="color:#1a1a2e">${sl.title}</h1>
+      <p style="color:#555">${sl.subtitle||''}</p>
+      <div class="header-line" style="background:${sl.accent_color}"></div>
+    </div>
+    <div class="two-tables">
+      <div>
+        <div class="table-title" style="color:var(--teal)">${sl.table1_title||'דנסגלס® — אישורי אש ובטיחות'}</div>
+        <div class="price-wrap">
+          <table class="data-table">
+            <tr><th style="background:var(--teal);color:#fff">${sl.col1_h1||ui('cert_col_label')}</th>
+                <th style="background:var(--teal);color:#fff">${sl.col1_h2||ui('result_label')}</th>
+                <th style="background:var(--teal);color:#fff">${sl.col1_h3||ui('standard_col_label')}</th></tr>
+            ${dgC.map(r=>`<tr class="${r.highlight?'highlight-row':''}">
+              <td>${r.cert_name}</td><td class="pass">${r.result}</td>
+              <td style="font-size:10px;color:#777">${r.version||''}</td></tr>`).join('')}
+          </table>
+        </div>
+        <div class="epd-bar" style="margin-top:10px">📄 <a href="${EPD_URL}" target="_blank">${sl.epd_label||ui('epd_label')}</a></div>
+        ${sl.fire_test_url?`<div class="epd-bar" style="margin-top:8px;background:rgba(220,53,69,0.08);border:1px solid rgba(220,53,69,0.3)">
+          🔥 <a href="${sl.fire_test_url}" target="_blank" style="color:#dc3545;font-weight:700">
+            ${sl.fire_test_label||ui('fire_test_label')}
+          </a></div>`:''}
+      </div>
+      <div>
+        <div class="table-title" style="color:var(--green)">${sl.table2_title||'באקסב-אקו® — ציות VOC וסביבה'}</div>
+        <div class="price-wrap">
+          <table class="data-table">
+            <tr><th style="background:var(--green);color:#fff">${sl.col2_h1||ui('protocol_col_label')}</th>
+                <th style="background:var(--green);color:#fff">${sl.col2_h2||ui('result_label')}</th>
+                <th style="background:var(--green);color:#fff">${sl.col2_h3||'גרסה'}</th></tr>
+            ${bxC.map(r=>`<tr class="${r.highlight?'highlight-row':''}">
+              <td>${r.cert_name}</td><td class="pass">✓ ${r.result}</td>
+              <td style="font-size:10px;color:#777">${r.version||''}</td></tr>`).join('')}
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── PRICE TABLE ── */
+function renderPriceTable(sl){
+  const pm = priceMeta;
+  const PDF_OFFER = sl.pdf_url || '';
+  return `
+  <div class="slide" id="slide-${idx(sl)}" style="background:${sl.bg_color};padding-top:68px">
+    <div class="slide-header">
+      <div class="slide-label" style="color:${sl.accent_color}">${gex('price').label_override||ui('price_title')}</div>
+      <h1 style="color:#1a1a2e">${sl.title}</h1>
+      <div class="header-line" style="background:${sl.accent_color}"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      ${Object.values(pm).map(m=>`
+        <div style="background:#fff;border-radius:10px;padding:12px 16px;border-right:4px solid ${m.meta_color||'var(--teal)'}">
+          <div style="font-size:9px;font-weight:900;color:${m.meta_color||'var(--teal)'};letter-spacing:1px;margin-bottom:4px">${_priceLabel(m.meta_key)}</div>
+          <div style="font-size:13px;font-weight:700;color:#1a1a2e">${m.meta_value}</div>
+        </div>`).join('')}
+    </div>
+    <div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.1)">
+      <div style="background:var(--teal);padding:12px 20px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:13px;font-weight:700;color:#fff">📄 ${sl.title}</span>
+        ${PDF_OFFER?`<a href="${PDF_OFFER}" target="_blank"
+           style="background:var(--gold);color:var(--dark);padding:7px 18px;border-radius:20px;font-size:11px;font-weight:900;text-decoration:none">${sl.download_label||ui('download_pdf_label')}
+        </a>`:''}
+      </div>
+      ${PDF_OFFER?`<iframe data-src="${PDF_OFFER}" src="about:blank"
+              style="width:100%;height:68vh;border:none;display:block"
+              class="lazy-iframe" title="${sl.title}"></iframe>`:''}
+    </div>
+    ${PDF_OFFER?`<div style="text-align:center;margin-top:12px;font-size:10px;color:#999">
+      אם ה-PDF לא נטען — <a href="${PDF_OFFER}" target="_blank" style="color:var(--teal);font-weight:700">${sl.open_new_label||ui('open_link_label')}</a>
+    </div>`:''}
+  </div>`;
+}
+function _priceLabel(key){
+  const m={'client':(priceMeta.client&&priceMeta.client.meta_label)||'לקוח','send_date':(priceMeta.send_date&&priceMeta.send_date.meta_label)||ui('send_date_label'),'sent_by':(priceMeta.sent_by&&priceMeta.sent_by.meta_label)||ui('sent_by_label'),'execution':(priceMeta.execution&&priceMeta.execution.meta_label)||ui('execution_label')};
+  return m[key]||key;
+}
+
+function openLB(url, label){
+  document.getElementById('lb-img').src = url;
+  document.getElementById('lb-caption').textContent = label;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLB(){
+  document.getElementById('lightbox').classList.remove('open');
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLB(); });
+
+function renderModule(sl){
+  const ex = gex('module');
+  return `
+  <div class="slide" id="slide-${idx(sl)}" style="background:${sl.bg_color};padding-top:68px">
+    <div class="slide-header">
+      <div class="slide-label" style="color:${sl.accent_color}">${ex.label_override||ui('module_subtitle')}</div>
+      <h1 style="color:#fff">${sl.title}</h1>
+      <p style="color:var(--lgray)">${sl.subtitle||''}</p>
+      <div class="header-line" style="background:${sl.accent_color}"></div>
+    </div>
+    <div style="text-align:center;margin-bottom:28px">
+      <img src="${MOD_URL}" style="max-height:220px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.5);cursor:zoom-in;object-fit:contain"
+           onclick="openLB('${MOD_URL}','${sl.module_label||ui('module_title')}')"
+           alt="${sl.module_label||'מודול הבנייה'}" onerror="this.style.display='none'">
+      <div style="font-size:11px;color:var(--mgray);margin-top:8px">${sl.zoom_hint||ui('zoom_hint')}</div>
+    </div>
+    <div style="font-size:13px;font-weight:900;color:var(--gold);margin-bottom:14px;text-align:center;letter-spacing:1px">
+      ${sl.colors_title||ui('colors_hint')}
+    </div>
+    <div class="colors-grid">
+      ${colorSamples.map(cs=>`
+        <div class="color-card" onclick="openLB('${cs.image_url}','${cs.label}')">
+          <img src="${cs.image_url}" alt="${cs.label}" onerror="this.style.background='${cs.bg_color}';this.style.height='260px'">
+          <div class="color-label" style="background:${cs.bg_color};color:#fff">${cs.label}</div>
+        </div>`).join('')}
+    </div>
+    <div style="text-align:center;margin-top:18px;font-size:11px;color:var(--mgray)">
+      ${sl.colors_note||ui('module_colors_title')}
+    </div>
+  </div>`;
+}
+
+function renderSurfaces(sl){
+  const items = gc('surfaces');
+  const title = (sl.title||'').replace(/מיקרו-מלט/g,'מיקרוטופינג');
+  return `
+  <div class="slide" id="slide-${idx(sl)}" style="background:${sl.bg_color};padding-top:68px">
+    <div class="slide-header">
+      <div class="slide-label" style="color:${sl.accent_color}">${ui('module_label')}</div>
+      <h1 style="color:#1a1a2e">${title}</h1>
+      <p style="color:#555">${sl.subtitle||''}</p>
+      <div class="header-line" style="background:${sl.accent_color}"></div>
+    </div>
+    <div class="surface-grid">
+      ${items.map((item,i)=>`
+        <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:12px;padding:14px;direction:rtl">
+          <div class="surface-num" style="background:${sl.accent_color};color:#fff">${i+1}</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span style="font-size:18px">${item.icon||''}</span>
+            <strong style="font-size:12px;color:var(--teal)">${item.heading||''}</strong>
+          </div>
+          <p style="font-size:11px;color:#444;line-height:1.8">${item.body_text||''}</p>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderContact(sl){
+  const ex = gex(sl.slide_key);
+  return `
+  <div class="slide" id="slide-${idx(sl)}" style="background:${sl.bg_color};padding-top:68px">
+    <div class="contact-wrap">
+      <div style="font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:14px">${ex.label_override||ui('contact_label')}</div>
+      <h1 style="font-size:38px;font-weight:900;text-align:center;max-width:680px;line-height:1.2">${sl.title}</h1>
+      <p style="color:var(--gold);font-size:14px;letter-spacing:2px;margin-top:12px">${sl.subtitle}</p>
+      <div style="width:90px;height:3px;background:var(--gold);margin:24px auto"></div>
+      <div style="font-size:12px;color:#666;margin-bottom:24px">${sl.brand_line||ex.brand_line||''}</div>
+      <div class="contact-box">
+        <div style="font-size:18px;font-weight:900;color:var(--cream);margin-bottom:14px">
+          ${offerMeta.prepared_by||sl.prepared_by||''}
+        </div>
+        <div style="font-size:14px;line-height:2.4;color:var(--gold)">
+          📞 &nbsp; ${offerMeta.contact_phone||''}<br>
+          ✉ &nbsp; ${offerMeta.contact_email||''}
+        </div>
+      </div>
+      <div class="epd-bar" style="margin-top:28px;justify-content:center">
+        📄 <a href="${EPD_URL}" target="_blank">${sl.epd_link_label||ui('epd_download_label')}</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderWorkPlan(){
+  const sl = allSlides.find(s=>s.slide_key==='workplan') || {};
+  const tasks = projectTasks;
+  const pm = projectMeta;
+  const today = new Date();
+  const projectStart = new Date(pm.project_start_date||'2026-03-02');
+  const totalDays = parseInt(pm.project_total_days||'40');
+  const daysSinceStart = Math.floor((today - projectStart) / 86400000);
+  const todayPct = Math.min(100, Math.max(0, (daysSinceStart / totalDays) * 100));
+  const weeks = (pm.gantt_weeks||ui('gantt_dates')||'1 מרץ,8 מרץ,15 מרץ,22 מרץ,29 מרץ,5 אפר,12 אפר').split(',');
+  const avgDone = tasks.length ? Math.round(tasks.reduce((a,t)=>a+t.done_pct,0)/tasks.length) : 0;
+  const ganttRows = tasks.map(t => {
+    const leftPct  = (t.start_day / totalDays) * 100;
+    const widthPct = (t.duration_days / totalDays) * 100;
+    const doneW    = widthPct * (t.done_pct / 100);
+    return `
+      <div style="display:grid;grid-template-columns:180px 1fr 90px;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:10px;color:#ccc;text-align:right;padding-left:8px;line-height:1.4">${t.name}</div>
+        <div style="position:relative;height:22px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+          <div style="position:absolute;right:${leftPct}%;width:${widthPct}%;height:100%;background:${t.color}22;border-radius:4px;border:1px solid ${t.color}66"></div>
+          <div style="position:absolute;right:${leftPct}%;width:${doneW}%;height:100%;background:${t.color};border-radius:4px;opacity:0.85"></div>
+        </div>
+        <div style="font-size:9px;color:#888;text-align:center">${t.owner}</div>
+      </div>`;
+  }).join('');
+  const weekHeaders = `
+    <div style="display:grid;grid-template-columns:180px 1fr 90px;gap:8px;margin-bottom:4px">
+      <div></div>
+      <div style="display:flex;justify-content:space-between;padding:0 2px">
+        ${weeks.map(w=>`<span style="font-size:8px;color:#666">${w}</span>`).join('')}
+      </div>
+      <div></div>
+    </div>`;
+  const statusItems = [
+    ['📅',pm.label_start_date||ui('start_date_label'), pm.project_start_date ? new Date(pm.project_start_date).toLocaleDateString('he-IL') : '', 'var(--teal)'],
+    ['🏁',pm.label_delivery||ui('delivery_label'), pm.delivery_date||'', 'var(--gold)'],
+    ['👷',pm.label_team||ui('team_label'), pm.team_members||'', 'var(--green)'],
+    ['📍',ui('workplan_short')||'פרויקט', pm.project_name||'', 'var(--teal)'],
+  ];
+  return `
+  <div class="slide" id="slide-operations" style="background:#0f1420;padding-top:68px">
+    <div class="slide-header">
+      <div class="slide-label" style="color:var(--gold)">${sl.label_text||ui('workplan_label')}</div>
+      <h1 style="color:#fff">${sl.title||'נהלי עבודה — '+(pm.project_name||'')}</h1>
+      <p style="color:var(--lgray)">${sl.subtitle||'יומן עבודה · גנט פעילות · מעקב התקדמות'}</p>
+      <div class="header-line" style="background:var(--gold)"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div style="background:#1a2030;border-radius:14px;padding:20px;border:1px solid rgba(201,147,58,0.2)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <div style="font-size:14px;font-weight:900;color:var(--gold)">📊 ${sl.gantt_title||ui('gantt_title')}</div>
+            <div style="font-size:10px;color:#666;margin-top:3px">${pm.gantt_subtitle||''}</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:20px;font-weight:900;color:var(--green)">${avgDone}%</div>
+            <div style="font-size:9px;color:#666">${sl.progress_label||ui('progress_label')}</div>
+          </div>
+        </div>
+        <div style="position:relative;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;margin-bottom:12px;overflow:visible">
+          <div style="position:absolute;right:0;width:${todayPct}%;height:100%;background:var(--gold);border-radius:2px"></div>
+          <div style="position:absolute;right:${todayPct}%;top:-8px;font-size:8px;color:var(--gold);white-space:nowrap;transform:translateX(50%)">${sl.today_label||ui('today_label')}</div>
+        </div>
+        ${weekHeaders}
+        <div>${ganttRows}</div>
+        <div style="display:flex;gap:16px;margin-top:14px;flex-wrap:wrap">
+          ${[['#0d5c63','התקנה'],['#2d9e6b','מיקרוטופינג'],['#c9933a','תיאום'],['#dc2626','פירוק']].map(([clr,lbl])=>`
+            <div style="display:flex;align-items:center;gap:5px">
+              <div style="width:12px;height:12px;background:${clr};border-radius:3px"></div>
+              <span style="font-size:9px;color:#888">${lbl}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div style="background:#1a2030;border-radius:14px;overflow:hidden;border:1px solid rgba(201,147,58,0.2);display:flex;flex-direction:column">
+        <div style="background:var(--teal);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+          <div>
+            <div style="font-size:13px;font-weight:900;color:#fff">📓 ${sl.journal_title||ui('journal_title')}</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.6);margin-top:2px">${pm.project_name||''}</div>
+          </div>
+          <a href="${sl.journal_url||ui('journal_url')||'https://avshi2-maker.github.io/work-journal/'}" target="_blank"
+             style="background:var(--gold);color:var(--dark);padding:6px 14px;border-radius:16px;font-size:10px;font-weight:900;text-decoration:none">
+            ${sl.open_full_label||ui('open_full_label')}
+          </a>
+        </div>
+        <iframe data-src="${sl.journal_url||ui('journal_url')||'https://avshi2-maker.github.io/work-journal/'}" src="about:blank"
+                style="flex:1;width:100%;min-height:520px;border:none;background:#fff"
+                class="lazy-iframe" title="${sl.journal_title||ui('journal_title')}"></iframe>
+        <div style="padding:8px 16px;background:#131925;font-size:9px;color:#555;text-align:center">
+          ${sl.journal_fallback||ui('journal_fallback')}
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px">
+      ${statusItems.map(([ico,label,val,clr])=>`
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;border-right:3px solid ${clr}">
+          <div style="font-size:10px;color:#666;margin-bottom:4px">${ico} ${label}</div>
+          <div style="font-size:12px;font-weight:700;color:#fff">${val}</div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderProcess(){
+  const sl = allSlides.find(s=>s.slide_key==='process') || {};
+  const steps = processSteps;
+  const VIDEO_URL = sl.video_url || '';
+  const keyFacts = sl.key_facts_json ? JSON.parse(sl.key_facts_json) :
+    JSON.parse(projectMeta.process_key_facts||'[["⏱️","זמן יישום","2-3 ימי עבודה"],["📐","עובי סופי","2-3 מ\\"מ"],["💧","אטימה","מיידית לאחר סיילר"],["🎨","צבע","לפי בחירת הלקוח"]]');
+  return `
+  <div class="slide" id="slide-process" style="background:#0f1420;padding-top:68px">
+    <div class="slide-header">
+      <div class="slide-label" style="color:var(--gold)">${sl.label_text||ui('module_label')}</div>
+      <h1 style="color:#fff">${sl.title||'תהליך מריחת מיקרוטופינג'}</h1>
+      <p style="color:var(--lgray)">${sl.subtitle||''}</p>
+      <div class="header-line" style="background:var(--gold)"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div>
+        <div style="background:#1a2030;border-radius:14px;overflow:hidden;border:1px solid rgba(201,147,58,0.25)">
+          <div style="background:var(--teal);padding:10px 18px;display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;font-weight:900;color:#fff">🎬 ${sl.video_title||ui('video_title')}</span>
+            ${VIDEO_URL?`<a href="${VIDEO_URL}" target="_blank" style="background:var(--gold);color:var(--dark);padding:5px 12px;border-radius:12px;font-size:10px;font-weight:900;text-decoration:none">${sl.download_label||ui('download_label')}</a>`:''}
+          </div>
+          ${VIDEO_URL?`
+            <video controls playsinline style="width:100%;max-height:340px;display:block;background:#000">
+              <source src="${VIDEO_URL}" type="video/mp4">
+              <source src="${VIDEO_URL}" type="video/quicktime">
+            </video>` : `
+            <div style="height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#131925">
+              <div style="font-size:64px;margin-bottom:16px;opacity:0.25">🎬</div>
+              <div style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.3);margin-bottom:8px">${sl.video_placeholder||ui('video_placeholder')}</div>
+              <div style="font-size:11px;color:#444;text-align:center;max-width:280px;line-height:1.8">${sl.video_hint||ui('video_hint')}</div>
+            </div>`}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+          ${keyFacts.map(([ico,label,val])=>`
+            <div style="background:#1a2030;border-radius:10px;padding:12px;border:1px solid rgba(255,255,255,0.06);text-align:center">
+              <div style="font-size:20px;margin-bottom:6px">${ico}</div>
+              <div style="font-size:9px;color:#666;margin-bottom:3px">${label}</div>
+              <div style="font-size:12px;font-weight:700;color:#fff">${val}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:900;color:var(--gold);margin-bottom:14px;letter-spacing:1px">${sl.steps_title||steps.length+' שלבי היישום המקצועי'}</div>
+        ${steps.map(s=>`
+          <div style="display:flex;gap:12px;background:#1a2030;border-radius:10px;padding:13px;margin-bottom:10px;border-right:4px solid ${s.color};direction:rtl">
+            <div style="flex-shrink:0;text-align:center">
+              <div style="background:${s.color};color:#fff;border-radius:8px;width:36px;height:36px;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center">${s.step_num}</div>
+              <div style="font-size:18px;margin-top:6px">${s.icon||''}</div>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:900;color:#fff;margin-bottom:5px">${s.title}</div>
+              <div style="font-size:10px;color:#999;line-height:1.8">${s.body}</div>
+            </div>
+          </div>`).join('')}
+        <div style="background:rgba(45,158,107,0.1);border:1px solid rgba(45,158,107,0.3);border-radius:10px;padding:12px 16px;margin-top:4px;direction:rtl">
+          <div style="font-size:10px;font-weight:900;color:var(--green);margin-bottom:6px">${sl.cert_note_title||'✅ תקן Topcret® — מיישם מוסמך בלבד'}</div>
+          <div style="font-size:10px;color:#888;line-height:1.8">${sl.cert_note_body||''}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderSitePhotos(){
+  const sl = allSlides.find(s=>s.slide_key==='sitephotos') || {};
+  const photos = sitePhotos;
+  const todoItems = sl.photo_checklist ? sl.photo_checklist.split('|') :
+    (projectMeta.site_photo_checklist||'מבט כללי על החזית הקיימת|סדקים וקילופים בבטון|פינות ואזורי נזק|חלונות ודלתות — מסגרות|תשתית — יסודות נראים לעין|מבט מהרחוב — זווית מלאה').split('|');
+  return `
+  <div class="slide" id="slide-sitephotos" style="background:#0f1420;padding-top:68px">
+    <div class="slide-header">
+      <div class="slide-label" style="color:var(--gold)">${sl.label_text||ui('sitephotos_label')}</div>
+      <h1 style="color:#fff">${sl.title||'תמונות מצב קיים'}</h1>
+      <p style="color:var(--lgray)">${sl.subtitle||''}</p>
+      <div class="header-line" style="background:var(--gold)"></div>
+    </div>
+    ${photos.length === 0 ? `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;text-align:center">
+        <div style="font-size:72px;margin-bottom:24px;opacity:0.3">📷</div>
+        <div style="font-size:20px;font-weight:900;color:rgba(255,255,255,0.4);margin-bottom:12px">${sl.placeholder_title||ui('photos_placeholder')}</div>
+        <div style="font-size:13px;color:#555;max-width:400px;line-height:1.8">${sl.placeholder_hint||'הוסף שורות לטבלת site_photos ב-Supabase'}</div>
+        <div style="margin-top:28px;background:rgba(201,147,58,0.08);border:1px dashed rgba(201,147,58,0.3);border-radius:12px;padding:20px 32px">
+          <div style="font-size:11px;color:var(--gold);font-weight:700;margin-bottom:10px">📋 ${sl.checklist_title||ui('photos_what_label')}</div>
+          ${todoItems.map((item,i)=>`
+            <div style="display:flex;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);direction:rtl">
+              <span style="background:var(--gold);color:var(--dark);border-radius:50%;width:20px;height:20px;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>
+              <span style="font-size:11px;color:#aaa">${item.trim()}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    ` : `
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:16px">
+        ${photos.map(p=>`
+          <div style="border-radius:12px;overflow:hidden;cursor:zoom-in;box-shadow:0 6px 24px rgba(0,0,0,0.4);transition:transform 0.2s" onclick="openLB('${p.image_url}','${p.caption}')">
+            <img src="${p.image_url}" alt="${p.caption}" style="width:100%;height:220px;object-fit:cover;display:block">
+            <div style="background:#1a2030;padding:10px 14px;font-size:11px;color:#ccc;direction:rtl">${p.caption}</div>
+          </div>`).join('')}
+      </div>
+    `}
+  </div>`;
+}
+
+function renderTeam(){
+  const sl = allSlides.find(s=>s.slide_key==='team') || {};
+  const members = teamMembers;
+  const badges = sl.badges_json ? JSON.parse(sl.badges_json) :
+    JSON.parse(projectMeta.team_badges||ui('team_badges_json')||'[]');
+  return `
+  <div class="slide" id="slide-team" style="background:#0f1420;padding-top:68px">
+    <div class="slide-header">
+      <div class="slide-label" style="color:var(--gold)">${sl.label_text||'קבוצת ביצוע'}</div>
+      <h1 style="color:#fff">${sl.title||'קורות חיים — צוות הפרויקט'}</h1>
+      <p style="color:var(--lgray)">${sl.subtitle||''}</p>
+      <div class="header-line" style="background:var(--gold)"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:${members.length>1?'1fr 1fr':'1fr'};gap:24px;margin-top:8px">
+      ${members.map(m=>{
+        const details  = gtd(m.name);
+        const projects = gtp(m.name);
+        const avatarHTML = m.avatar_image_url
+          ? `<img src="${m.avatar_image_url}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 14px;display:block;border:3px solid rgba(255,255,255,0.3)">`
+          : `<div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.15);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:36px;border:3px solid rgba(201,147,58,0.5)">${m.avatar_emoji||'👤'}</div>`;
+        return `
+        <div style="background:#1a2030;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)">
+          <div style="background:${m.header_gradient};padding:28px 24px;text-align:center;position:relative">
+            ${avatarHTML}
+            <div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:6px">${m.name}</div>
+            <div style="font-size:12px;color:${m.accent_color};font-weight:700;letter-spacing:1px">${m.role_title}</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:6px">${m.role_subtitle||''}</div>
+          </div>
+          <div style="padding:22px 24px">
+            ${details.map(d=>`
+              <div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.06);align-items:flex-start">
+                <span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;margin-top:1px">${d.icon||''}</span>
+                <div>
+                  <div style="font-size:9px;font-weight:900;color:${m.accent_color};letter-spacing:1px;margin-bottom:3px">${d.label}</div>
+                  <div style="font-size:11px;color:#ccc;line-height:1.6">${d.value}</div>
+                </div>
+              </div>`).join('')}
+            ${projects.length?`
+            <div style="margin-top:18px;background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 16px;border:1px solid rgba(255,255,255,0.1)">
+              <div style="font-size:10px;color:${m.accent_color};font-weight:900;margin-bottom:6px">${sl.projects_title||ui('projects_title')}</div>
+              <div style="font-size:10px;color:#aaa;line-height:2">
+                ${projects.map(p=>`· ${p.description}`).join('<br>')}
+              </div>
+            </div>`:''}
+            ${m.cv_pdf_url?`
+            <div style="margin-top:14px">
+              <div style="font-size:10px;font-weight:900;color:${m.accent_color};margin-bottom:8px;letter-spacing:1px">${sl.cv_section_title||'📄 קורות חיים מלאים'}</div>
+              <div style="background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.3)">
+                <div style="background:${m.accent_color};padding:8px 14px;display:flex;align-items:center;justify-content:space-between">
+                  <span style="font-size:11px;font-weight:700;color:#fff">${m.name} — ${sl.profile_suffix||ui('cv_section_title')}</span>
+                  <a href="${m.cv_pdf_url}" target="_blank" style="background:var(--gold);color:var(--dark);padding:5px 12px;border-radius:12px;font-size:10px;font-weight:900;text-decoration:none">${sl.download_label||ui('download_pdf_label')}</a>
+                </div>
+                <iframe data-src="${m.cv_pdf_url}" src="about:blank" style="width:100%;height:320px;border:none;display:block" class="lazy-iframe" title="${sl.cv_prefix||ui('cv_prefix')} ${m.name}"></iframe>
+              </div>
+              <div style="text-align:center;margin-top:6px;font-size:9px;color:#555">${sl.pdf_fallback_prefix||ui('pdf_fallback')}<a href="${m.cv_pdf_url}" target="_blank" style="color:${m.accent_color};font-weight:700">${sl.open_new_label||ui('open_new_label')}</a>
+              </div>
+            </div>`:
+            `<div style="margin-top:14px;background:rgba(201,147,58,0.08);border-radius:10px;padding:10px 14px;font-size:10px;color:#999;text-align:center;border:1px dashed rgba(201,147,58,0.25)">
+              ${sl.cv_no_pdf_msg||ui('cv_no_pdf_msg')}
+            </div>`}
+          </div>
+        </div>`}).join('')}
+    </div>
+    <div style="background:rgba(201,147,58,0.08);border:1px solid rgba(201,147,58,0.2);border-radius:12px;padding:14px 20px;margin-top:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;direction:rtl">
+      <span style="font-size:20px">🤝</span>
+      <div>
+        <div style="font-size:12px;font-weight:900;color:var(--gold)">${sl.footer_title||ui('team_footer_title')}</div>
+        <div style="font-size:11px;color:#999;margin-top:3px">${sl.footer_subtitle||''}</div>
+      </div>
+      <div style="margin-right:auto;display:flex;gap:10px;flex-wrap:wrap">
+        ${badges.map(([clr,lbl])=>`<span style="background:rgba(255,255,255,0.05);border:1px solid ${clr};color:${clr};padding:5px 14px;border-radius:20px;font-size:10px;font-weight:700">${lbl}</span>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── RENDER ALL ── */
+function renderAll(){
+  const main = document.getElementById('main');
+  const nav  = document.getElementById('nav-buttons');
+  let html = '';
+
+  const STATIC_KEYS = ['workplan','team','sitephotos','process'];
+  allSlides.forEach((sl,i)=>{
+    if(sl.slide_order===9) return;
+    if(STATIC_KEYS.includes(sl.slide_key)) return;
+    if     (sl.layout==='cover')       html += renderCover(sl);
+    else if(sl.layout==='contact')     html += renderContact(sl);
+    else if(sl.layout==='image_full')  html += renderModule(sl);
+    else if(sl.layout==='table' && sl.slide_key==='fire')  html += renderFireTable(sl);
+    else if(sl.layout==='table' && sl.slide_key==='price') html += renderPriceTable(sl);
+    else if(sl.layout==='two-col')     html += renderTwoCol(sl);
+    else if(sl.slide_key==='surfaces') html += renderSurfaces(sl);
+    else html += renderGrid3(sl);
+  });
+
+  html += renderWorkPlan();
+  html += renderTeam();
+  html += renderSitePhotos();
+  html += renderProcess();
+
+  main.innerHTML = html;
+  const totalNow = document.querySelectorAll('.slide').length;
+
+  function _stab(key, fallback){ const s=allSlides.find(r=>r.slide_key===key); return s ? Math.floor(s.slide_order)+'. '+s.title : fallback; }
+  const staticTabs = [
+    [totalNow-4, _stab('workplan',   ui('nav_workplan')  ||'12. נהלי עבודה')],
+    [totalNow-3, _stab('team',       ui('nav_team')      ||'13. קבוצת ביצוע')],
+    [totalNow-2, _stab('sitephotos', ui('nav_sitephotos')||'14. תמונות מצב קיים')],
+    [totalNow-1, _stab('process',    ui('nav_process')   ||'15. תהליך יישום')],
+  ];
+
+  nav.innerHTML = allSlides.filter(sl=>sl.slide_order!==9).map((sl,i)=>`
+    <button class="nav-btn ${i===0?'active':''}" data-slide="${i}" onclick="goTo(${i})">${Math.floor(sl.slide_order)}. ${(sl.title||'').replace(/מיקרו-מלט/g,'מיקרוטופינג')}</button>
+  `).join('') + staticTabs.map(([idx,label])=>`
+    <button class="nav-btn" data-slide="${idx}" onclick="goTo(${idx})">${label}</button>
+  `).join('');
+
+  window._totalSlides = totalNow;
+}
+
+function goTo(i){
+  document.querySelectorAll('.slide').forEach((s,j)=>s.classList.toggle('active',j===i));
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    const active = parseInt(b.dataset.slide)===i;
+    b.classList.toggle('active', active);
+    if(active) b.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  });
+  current=i;
+  window.scrollTo(0,0);
+  const activeSlide = document.querySelectorAll('.slide')[i];
+  if(activeSlide){
+    activeSlide.querySelectorAll('iframe.lazy-iframe').forEach(fr=>{
+      if(fr.dataset.src && fr.src !== fr.dataset.src){ fr.src = fr.dataset.src; }
+    });
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowUp')   goTo(Math.max(current-1,0));
+  if(e.key==='ArrowLeft' ||e.key==='ArrowDown') goTo(Math.min(current+1,(window._totalSlides||99)-1));
+});
+
+(async()=>{
+  try{
+    await loadAll();
+    renderAll();
+    document.getElementById('loading').style.display='none';
+  }catch(e){
+    document.getElementById('loading').innerHTML=`<p style="color:red">שגיאה: ${e.message}</p>`;
+    console.error(e);
+  }
+})();
+
+/* ── SWIPE ── */
+(function(){
+  let startX=0, startY=0, startInZone=false;
+  const ZONE_HEIGHT = 160;
+  const MIN_SWIPE = 60;
+  document.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    startInZone = (startY < ZONE_HEIGHT) || (startY > window.innerHeight - 100);
+  }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if(!startInZone) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    if(Math.abs(dx) < MIN_SWIPE) return;
+    if(Math.abs(dy) > Math.abs(dx)) return;
+    const total = window._totalSlides || document.querySelectorAll('.slide').length;
+    if(dx < -MIN_SWIPE) goTo(Math.min(current+1, total-1));
+    if(dx >  MIN_SWIPE) goTo(Math.max(current-1, 0));
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
