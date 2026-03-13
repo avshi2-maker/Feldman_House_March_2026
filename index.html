@@ -238,6 +238,7 @@ function ui(key){ return uiStrings[key]||''; }
 let coverComps=[], slideExtra=[], warrantyItems=[], sustainItems=[], colorSamples=[];
 let projectTasks=[], projectMeta={}, processSteps=[];
 let sitePhotos=[], teamMembers=[], teamDetails=[], teamProjects=[], priceMeta={};
+let podcastChapters=[];
 function gex(key){ return slideExtra.find(r=>r.slide_key===key)||{}; }
 function gtd(name){ return teamDetails.filter(r=>r.member_name===name); }
 function gtp(name){ return teamProjects.filter(r=>r.member_name===name); }
@@ -247,7 +248,7 @@ async function loadAll(){
   const [s,cc,sp,ce,pr,om,
          cvr,sex,war,sus,col,
          tsk,pmeta,prc,pho,
-         tmb,tmd,tmp,pricm,uis] = await Promise.all([
+         tmb,tmd,tmp,pricm,uis,pod] = await Promise.all([
     db.from('presentation_slides').select('*').eq('is_active',true).order('slide_order'),
     db.from('slide_content').select('*').eq('is_active',true).order('block_order'),
     db.from('product_specs').select('*').order('spec_order'),
@@ -267,7 +268,8 @@ async function loadAll(){
     db.from('team_member_details').select('*').eq('is_active',true).order('detail_order'),
     db.from('team_projects').select('*').eq('is_active',true).order('project_order'),
     db.from('price_meta').select('*').eq('is_active',true),
-    db.from('ui_strings').select('*')
+    db.from('ui_strings').select('*'),
+    db.from('podcast_chapters').select('*').order('chapter_order')
   ]);
   allSlides        = s.data    || [];
   allContent       = cc.data   || [];
@@ -289,6 +291,7 @@ async function loadAll(){
   teamProjects     = tmp.data  || [];
   priceMeta        = Object.fromEntries((pricm.data||[]).map(r=>[r.meta_key,r]));
   uiStrings        = Object.fromEntries((uis.data||[]).map(r=>[r.string_key,r.string_value]));
+  podcastChapters  = pod.data || [];
 }
 
 const gc = key => allContent.filter(x=>x.slide_key===key);
@@ -921,13 +924,34 @@ function renderTeam(){
   </div>`;
 }
 
+/* ── PODCAST ── */
+function renderPodcast(){
+  const chapters = podcastChapters;
+  const rows = chapters.length ? chapters.map(ch=>`
+    <div style="display:flex;align-items:flex-start;gap:16px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.1)">
+      <div style="min-width:36px;height:36px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#000">${ch.chapter_order||''}</div>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:16px;color:#fff;margin-bottom:4px">${ch.chapter_title||''}</div>
+        ${ch.description ? `<div style="font-size:13px;color:rgba(255,255,255,0.65);margin-bottom:8px">${ch.description}</div>` : ''}
+        ${ch.audio_url ? `<audio controls style="width:100%;height:36px;margin-top:4px"><source src="${ch.audio_url}"></audio>` : ''}
+      </div>
+      ${ch.duration ? `<div style="font-size:12px;color:var(--gold);white-space:nowrap;padding-top:8px">${ch.duration}</div>` : ''}
+    </div>`).join('') : `<p style="color:rgba(255,255,255,0.5);text-align:center;padding:40px 0">אין פרקים זמינים</p>`;
+  return `
+  <div class="slide" style="background:#1a1a2e;min-height:100vh;padding:68px 48px 48px;direction:rtl">
+    <div class="slide-label" style="color:var(--gold)">פודקאסט</div>
+    <h1 style="color:#fff;margin-bottom:32px">12. פודקאסט</h1>
+    <div style="max-width:800px;margin:0 auto">${rows}</div>
+  </div>`;
+}
+
 /* ── RENDER ALL ── */
 function renderAll(){
   const main = document.getElementById('main');
   const nav  = document.getElementById('nav-buttons');
   let html = '';
 
-  const STATIC_KEYS = ['workplan','team','sitephotos','process'];
+  const STATIC_KEYS = ['podcast','workplan','team','sitephotos','process'];
   allSlides.forEach((sl,i)=>{
     if(sl.slide_order===9) return;
     if(STATIC_KEYS.includes(sl.slide_key)) return;
@@ -941,6 +965,7 @@ function renderAll(){
     else html += renderGrid3(sl);
   });
 
+  html += renderPodcast();
   html += renderWorkPlan();
   html += renderTeam();
   html += renderSitePhotos();
@@ -951,13 +976,14 @@ function renderAll(){
 
   function _stab(key, fallback){ const s=allSlides.find(r=>r.slide_key===key); return s ? Math.floor(s.slide_order)+'. '+s.title : fallback; }
   const staticTabs = [
-    [totalNow-4, _stab('workplan',   ui('nav_workplan')  ||'12. נהלי עבודה')],
-    [totalNow-3, _stab('team',       ui('nav_team')      ||'13. קבוצת ביצוע')],
-    [totalNow-2, _stab('sitephotos', ui('nav_sitephotos')||'14. תמונות מצב קיים')],
-    [totalNow-1, _stab('process',    ui('nav_process')   ||'15. תהליך יישום')],
+    [totalNow-5, '12. פודקאסט'],
+    [totalNow-4, _stab('workplan',   ui('nav_workplan')  ||'13. נהלי עבודה')],
+    [totalNow-3, _stab('team',       ui('nav_team')      ||'14. קבוצת ביצוע')],
+    [totalNow-2, _stab('sitephotos', ui('nav_sitephotos')||'15. תמונות מצב קיים')],
+    [totalNow-1, _stab('process',    ui('nav_process')   ||'16. תהליך יישום')],
   ];
 
-  nav.innerHTML = allSlides.filter(sl=>sl.slide_order!==9).map((sl,i)=>`
+  nav.innerHTML = allSlides.filter(sl=>sl.slide_order!==9 && !STATIC_KEYS.includes(sl.slide_key)).map((sl,i)=>`
     <button class="nav-btn ${i===0?'active':''}" data-slide="${i}" onclick="goTo(${i})">${Math.floor(sl.slide_order)}. ${(sl.title||'').replace(/מיקרו-מלט/g,'מיקרוטופינג')}</button>
   `).join('') + staticTabs.map(([idx,label])=>`
     <button class="nav-btn" data-slide="${idx}" onclick="goTo(${idx})">${label}</button>
