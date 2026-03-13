@@ -926,22 +926,37 @@ function renderTeam(){
 
 /* ── PODCAST ── */
 function renderPodcast(){
+  const AUDIO_URL = 'https://wbuaeuenvuhbbuxeqlxr.supabase.co/storage/v1/object/public/facade-images/poscast.m4a';
   const chapters = podcastChapters;
+
+  function tsToSec(ts){
+    if(!ts) return 0;
+    const parts = ts.split(':').map(Number);
+    return parts.length===3 ? parts[0]*3600+parts[1]*60+parts[2] : parts[0]*60+(parts[1]||0);
+  }
+
   const rows = chapters.length ? chapters.map(ch=>`
-    <div style="display:flex;align-items:flex-start;gap:16px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.1)">
-      <div style="min-width:36px;height:36px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#000">${ch.chapter_order||''}</div>
+    <div onclick="(function(){var a=document.getElementById('podcast-player');if(a){a.currentTime=${tsToSec(ch.time_stamp)};a.play();}})()"
+         style="display:flex;align-items:flex-start;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.08);cursor:pointer"
+         onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='transparent'">
+      <div style="min-width:38px;height:38px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#000;flex-shrink:0">${ch.chapter_order||''}</div>
       <div style="flex:1">
-        <div style="font-weight:600;font-size:16px;color:#fff;margin-bottom:4px">${ch.chapter_title||''}</div>
-        ${ch.description ? `<div style="font-size:13px;color:rgba(255,255,255,0.65);margin-bottom:8px">${ch.description}</div>` : ''}
-        ${ch.audio_url ? `<audio controls style="width:100%;height:36px;margin-top:4px"><source src="${ch.audio_url}"></audio>` : ''}
+        <div style="font-weight:600;font-size:15px;color:#fff;margin-bottom:4px">${ch.title||''}</div>
+        ${ch.description ? `<div style="font-size:12px;color:rgba(255,255,255,0.55)">${ch.description}</div>` : ''}
       </div>
-      ${ch.duration ? `<div style="font-size:12px;color:var(--gold);white-space:nowrap;padding-top:8px">${ch.duration}</div>` : ''}
-    </div>`).join('') : `<p style="color:rgba(255,255,255,0.5);text-align:center;padding:40px 0">אין פרקים זמינים</p>`;
+      <div style="font-size:12px;color:var(--gold);white-space:nowrap;padding-top:10px;font-family:monospace">${ch.time_stamp||''}</div>
+    </div>`).join('') : '';
+
   return `
   <div class="slide" style="background:#1a1a2e;min-height:100vh;padding:68px 48px 48px;direction:rtl">
     <div class="slide-label" style="color:var(--gold)">פודקאסט</div>
-    <h1 style="color:#fff;margin-bottom:32px">12. פודקאסט</h1>
-    <div style="max-width:800px;margin:0 auto">${rows}</div>
+    <h1 style="color:#fff;margin-bottom:24px">12. פודקאסט</h1>
+    <div style="max-width:760px;margin:0 auto">
+      <audio id="podcast-player" controls style="width:100%;margin-bottom:32px;border-radius:8px">
+        <source src="${AUDIO_URL}" type="audio/mp4">
+      </audio>
+      ${rows}
+    </div>
   </div>`;
 }
 
